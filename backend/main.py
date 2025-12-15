@@ -3,12 +3,18 @@ from pydantic import BaseModel
 import sqlite3
 from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
+
 # フロントエンド(Next.js)からのアクセスを許可する設定
 app.add_middleware(
-   CORSMiddleware,
-   allow_origins=["http://localhost:3000"],
-   allow_methods=["*"],
-   allow_headers=["*"],
+    CORSMiddleware,
+    # ↓ 修正後のallow_origins
+    allow_origins=[
+        "http://localhost:3000",
+        "https://ai-diary-app-plum.vercel.app",  # Vercelの公開URL
+        # 必要であれば、あなたのVercelのドメインをここに追加
+    ],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 # データベースの準備
 conn = sqlite3.connect("diary.db", check_same_thread=False)
