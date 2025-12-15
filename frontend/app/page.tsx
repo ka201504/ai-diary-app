@@ -4,13 +4,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Send, BookHeart, Sparkles, Frown, Meh, Smile } from "lucide-react";
 
 export default function Home() {
+  // ▼ 修正ポイント1: 環境変数からAPIのURLを取得（なければlocalhostを使う）
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
   const [text, setText] = useState("");
   const [diaries, setDiaries] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchDiaries = async () => {
     try {
-      const res = await fetch("http://localhost:8000/diaries");
+      // ▼ 修正ポイント2: 変数 API_URL を使用
+      const res = await fetch(`${API_URL}/diaries`);
       if (!res.ok) return;
       const data = await res.json();
       setDiaries(data);
@@ -27,7 +31,8 @@ export default function Home() {
     if (!text.trim()) return;
     setIsLoading(true);
     try {
-      await fetch("http://localhost:8000/diaries", {
+      // ▼ 修正ポイント3: 変数 API_URL を使用
+      await fetch(`${API_URL}/diaries`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: text }),
@@ -121,7 +126,6 @@ export default function Home() {
                     <div className="flex-grow">
                       <p className="text-slate-700 leading-relaxed text-lg">{diary.content}</p>
                       <div className="mt-2 flex gap-2">
-                        {/* Tags or metadata could go here */}
                         <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${diary.mood === 'positive' ? 'bg-orange-100 text-orange-600' :
                           diary.mood === 'negative' ? 'bg-blue-100 text-blue-600' :
                             'bg-slate-100 text-slate-600'
